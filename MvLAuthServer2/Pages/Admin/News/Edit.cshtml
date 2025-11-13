@@ -1,0 +1,49 @@
+﻿@page "{id:int}"
+@model MvLAuthServer2.Pages.Admin.News.EditModel
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1>Edit</h1>
+
+<h4>News</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="NewsPost!.Id" />
+            <input type="hidden" asp-for="NewsPost!.Created" />
+            <div class="form-group">
+                <label asp-for="NewsPost!.Title" class="control-label"></label>
+                <input asp-for="NewsPost!.Title" class="form-control" />
+                <span asp-validation-for="NewsPost!.Title" class="text-danger"></span>
+                <br />
+                <label asp-for="NewsPost!.Author" class="control-label"></label>
+                <input asp-for="NewsPost!.Author" class="form-control" />
+                <span asp-validation-for="NewsPost!.Author" class="text-danger"></span>
+                <br />
+                <label asp-for="NewsPost!.Text" class="control-label"></label>
+                <textarea asp-for="NewsPost!.Text" class="form-control"></textarea>
+                <span asp-validation-for="NewsPost!.Text" class="text-danger"></span>
+                <br />
+                <label asp-for="NewsPost!.Created" class="control-label"></label>
+                <input asp-for="NewsPost!.Created" class="form-control" />
+                <span asp-validation-for="NewsPost!.Created" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-page="./Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

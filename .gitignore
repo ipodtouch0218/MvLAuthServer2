@@ -1,0 +1,6 @@
+.vs/
+bin/
+obj/
+*.sql
+appsettings.json
+*.pem

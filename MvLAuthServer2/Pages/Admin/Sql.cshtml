@@ -1,0 +1,97 @@
+﻿@page
+@model MvLAuthServer2.Pages.Admin.SqlModel
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@{
+    ViewData["Title"] = "Run SQL";
+}
+
+<h1>Manual SQL Entry</h1>
+
+<form method="post">
+    @Html.AntiForgeryToken()
+    <textarea asp-for="Command" rows="5" cols="100"></textarea><br />
+    <button type="submit">Execute</button>
+</form>
+
+@if (Model.SqlException != null) {
+    <div class="alert alert-error">
+        <p><strong>@Model.SqlException.Message</strong></p>
+        <pre>@Model.SqlException.StackTrace</pre>
+    </div>
+} else if (Model.ExecuteResults != null) {
+    <div class="alert alert-info">
+        <strong>@Model.ExecuteResults</strong> row(s) affected.
+    </div>
+} else if (Model.TableResults != null && Model.TableResults.Any())
+{
+    <div class="table-responsive">
+        <table class="table table-bordered table-striped table-sm">
+            <thead class="table-dark">
+                <tr>
+                    @foreach (var col in Model.TableResults.First().Keys) {
+                        <th>@col</th>
+                    }
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var row in Model.TableResults) {
+                    <tr>
+                        @foreach (var val in row.Values) {
+                            <td>@(val ?? "NULL")</td>
+                        }
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+} else if (Model.Command != null) {
+    <div class="alert alert-warning">No results returned.</div>
+}
+
+<style>
+.table {
+    border-collapse: collapse;
+    width: 100%;
+    margin-top: 1rem;
+    font-size: 0.9rem;
+}
+.table th, .table td {
+    border: 1px solid #ddd;
+    padding: 6px 10px;
+}
+.table th {
+    background: #333;
+    color: #fff;
+    text-align: left;
+}
+.table tr:nth-child(even) {
+    background: #f9f9f9;
+}
+.table tr:hover {
+    background: #f1f1f1;
+}
+
+/* Null values (grey italics) */
+.text-muted {
+    color: #888;
+}
+.fst-italic {
+    font-style: italic;
+}
+
+/* Wrap table in scrollable container */
+.table-responsive {
+    overflow-x: auto;
+}
+
+/* Truncate long values, show full on hover */
+.table td {
+    max-width: 300px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.table td[title] {
+    cursor: help;
+}
+</style>

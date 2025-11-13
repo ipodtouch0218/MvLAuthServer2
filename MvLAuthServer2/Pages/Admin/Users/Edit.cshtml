@@ -1,0 +1,52 @@
+﻿@page "{id:int}"
+@model MvLAuthServer2.Pages.Admin.Users.EditModel
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1>Edit</h1>
+
+<h4>User</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="UserEntry!.Id" />
+            <input type="hidden" asp-for="UserEntry!.HashedToken" />
+            <div class="form-group">
+                <label asp-for="UserEntry!.UserId" class="control-label"></label>
+                <input asp-for="UserEntry!.UserId" class="form-control" />
+                <span asp-validation-for="UserEntry!.UserId" class="text-danger"></span>
+                <br>
+                <label asp-for="UserEntry!.NicknameColor" class="control-label"></label>
+                <input asp-for="UserEntry!.NicknameColor" class="form-control" />
+                <span asp-validation-for="UserEntry!.NicknameColor" class="text-danger"></span>
+                <br>
+                <label asp-for="UserEntry!.FirstPlayed" class="control-label"></label>
+                <input asp-for="UserEntry!.FirstPlayed" class="form-control" disabled />
+                <br>
+                <label asp-for="UserEntry!.LastSeen" class="control-label"></label>
+                <input asp-for="UserEntry!.LastSeen" class="form-control" disabled />
+                <br>
+                <label asp-for="UserEntry!.TimesConnected" class="control-label"></label>
+                <input asp-for="UserEntry!.TimesConnected" class="form-control" disabled />
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-page="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

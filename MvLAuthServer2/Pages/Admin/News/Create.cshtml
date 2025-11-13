@@ -1,0 +1,23 @@
+﻿@page
+@model MvLAuthServer2.Pages.Admin.News.CreateModel
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+<p>Create a new news post:</p>
+
+<form method="post">
+    <label asp-for="NewsPost!.Title" class="control-label"></label>
+    <input asp-for="NewsPost!.Title" />
+    <br />
+    <label asp-for="NewsPost!.Author" class="control-label"></label>
+    <input asp-for="NewsPost!.Author" />
+    <br />
+    <label asp-for="NewsPost!.Text" class="control-label"></label>
+    <textarea asp-for="NewsPost!.Text" required ></textarea>
+    <br />
+    <label asp-for="NewsPost!.Created" class="control-label"></label>
+    <input asp-for="NewsPost!.Created" />
+    <br />
+    <input type="submit" value="Create" />
+</form>
+
+<a asp-page="Index">Cancel</a>

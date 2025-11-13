@@ -1,0 +1,43 @@
+﻿@page
+@using MvLAuthServer2
+@model MvLAuthServer2.Pages.Admin.News.IndexModel
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+<h1>All News</h1>
+
+<form method="post">
+    <table class="table" border="1" cellpadding="5">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Title</th>
+                <th>Author</th>
+                <th>Body</th>
+                <th>Created</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model.NewsPosts != null) {
+                foreach (var newsPost in Model.NewsPosts) {
+                    <tr>
+                        <td>@newsPost.Id</td>
+                        <td>@newsPost.Title</td>
+                        <td>@newsPost.Author</td>
+                        <td>@newsPost.Text</td>
+                        <td>@DateTimeOffset.FromUnixTimeSeconds(newsPost.Created).ToLocalTime()</td>
+                        <td>
+                            <!-- <snippet_Edit> -->
+                            <a asp-page="Edit" asp-route-id="@newsPost.Id">Edit</a> |
+                            <!-- </snippet_Edit> -->
+                            <!-- <snippet_Delete> -->
+                            <button type="submit" asp-page-handler="delete" asp-route-id="@newsPost.Id" onclick="return confirm('Are you sure?')">delete</button>
+                            <!-- </snippet_Delete> -->
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+    <a asp-page="Create">Create New</a>
+</form>

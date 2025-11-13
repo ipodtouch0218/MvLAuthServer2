@@ -1,0 +1,53 @@
+﻿@page "{id:int}"
+@model MvLAuthServer2.Pages.Admin.Bans.EditModel
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1>Edit</h1>
+
+<h4>Ban</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Ban!.Id" />
+            <input type="hidden" asp-for="Ban!.Created" />
+            <div class="form-group">
+                <label asp-for="Ban!.Message" class="control-label"></label>
+                <input asp-for="Ban!.Message" class="form-control" />
+                <span asp-validation-for="Ban!.Message" class="text-danger"></span>
+                <br />
+                <label asp-for="Ban!.UserId" class="control-label"></label>
+                <input asp-for="Ban!.UserId" class="form-control" />
+                <span asp-validation-for="Ban!.UserId" class="text-danger"></span>
+                <br>
+                <label asp-for="Ban!.IpRangeMin" class="control-label"></label>
+                <input asp-for="Ban!.IpRangeMin" class="form-control" />
+                <span asp-validation-for="Ban!.IpRangeMin" class="text-danger"></span>
+                
+                <label asp-for="Ban!.IpRangeMax" class="control-label"></label>
+                <input asp-for="Ban!.IpRangeMax" class="form-control" />
+                <span asp-validation-for="Ban!.IpRangeMax" class="text-danger"></span>
+                <br>
+                <label asp-for="Ban!.Expiration" class="control-label"></label>
+                <input asp-for="Ban!.Expiration" class="form-control" />
+                <span asp-validation-for="Ban!.Expiration" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-page="./Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

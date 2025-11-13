@@ -1,0 +1,7 @@
+﻿@page
+@model MvLAuthServer2.Pages.Admin.LoginModel
+<form method="post">
+    @Html.AntiForgeryToken()
+    <input type="password" name="secret" placeholder="Enter secret key" />
+    <button type="submit">Login</button>
+</form>
