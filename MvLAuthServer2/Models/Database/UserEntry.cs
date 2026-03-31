@@ -15,6 +15,7 @@ namespace MvLAuthServer2.Models.Database
         public long FirstPlayed { get; set; }
         public long LastSeen { get; set; }
         public int TimesConnected { get; set; }
+        public bool BanWhitelisted { get; set; }
 
 
         public List<NicknameLog> AllNicknames { get; set; }

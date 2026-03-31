@@ -13,6 +13,16 @@ namespace MvLAuthServer2.Services.Impl
     {
         public async Task<IResult?> CheckForBansAsync(string action, Guid userId, string ip)
         {
+            var userEntry = database.UserEntry
+                .Where(ue => ue.BanWhitelisted)
+                .Where(ue => ue.UserId == userId)
+                .FirstOrDefault();
+
+            if (userEntry != null)
+            {
+                return null;
+            }
+
             // Check that they aren't banned (ID)
             Ban? ban = await FindUserIdBan(userId);
             if (ban != null)
@@ -49,6 +59,7 @@ namespace MvLAuthServer2.Services.Impl
             return await database.Ban.AsNoTracking()
                 .Where(b => b.UserId == userId)
                 .Where(b => b.Expiration == null || b.Expiration > now)
+                //.Where(b => !b.Appealed)
                 .FirstOrDefaultAsync();
         }
 
@@ -64,6 +75,7 @@ namespace MvLAuthServer2.Services.Impl
             return await database.Ban.AsNoTracking()
                 .Where(b => b.IpRangeMin <= ipAsNumber && ipAsNumber <= b.IpRangeMax)
                 .Where(b => b.Expiration == null || b.Expiration > now)
+                //.Where(b => !b.Appealed)
                 .FirstOrDefaultAsync();
         }
     }

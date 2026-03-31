@@ -76,7 +76,6 @@ namespace MvLAuthServer2.Endpoints
                 response.SessionConfig.InputFixedSize = request.SessionConfig.InputFixedSize;
             }
 
-            log.Info(JsonConvert.SerializeObject(response));
             return Utils.CreateResult(response);
         }
 

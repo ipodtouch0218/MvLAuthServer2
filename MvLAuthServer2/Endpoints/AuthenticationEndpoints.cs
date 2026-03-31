@@ -22,7 +22,7 @@ namespace MvLAuthServer2.Endpoints
     {
         private static readonly Dictionary<string, long> LastLog = new();
 
-        private static async Task<IResult> Init(HttpContext context, [FromQuery] string? userid, [FromQuery] string? token, [FromQuery] int? args, MvLDBContext database, IEncryptionService encryptionService, ILog log)
+        private static async Task<IResult> Init(HttpContext context, [FromQuery] string? userid, [FromQuery] string? token, [FromQuery] int? args, MvLDBContext database, IEncryptionService encryptionService, IConfigFileService configFileService, ILog log)
         {
             try
             {
@@ -58,6 +58,30 @@ namespace MvLAuthServer2.Endpoints
                             LastLog[ip] = now;
                         }
                         return Utils.CreateResult(new MvLBanResult(ban), 403);
+                    }
+
+
+                    var vpnExceptions = configFileService.VpnExceptions;
+                    bool inWhitelist = vpnExceptions.Any(exceptionIp => (userid == exceptionIp) || Utils.IsIpInRange(ip, exceptionIp));
+
+                    if (!inWhitelist)
+                    {
+                        // Check for VPNs
+                        try
+                        {
+                            ProxyCheckResult result = await Utils.IsIpProxy(ip);
+                            IPAddress address = IPAddress.Parse(ip);
+                            if (result.Status == StatusResult.OK && result.Results[address].IsProxy)
+                            {
+                                log.Info($"AUTH: '{useridGuid}' ({ip}) tried to authenticate (init), but is using a VPN!");
+                                return Utils.CreateResult($"Your IP ({ip}) was detected as a VPN! VPNs are automatically blocked to prevent abuse." +
+                                    $"\n\nIf this is a mistake, please post a message in the #technical-support channel on the MvLO Discord: https://discord.gg/dgKVaUKpj5", 403);
+                            }
+                        }
+                        catch (Exception e)
+                        {
+                            log.Error($"ProxyCheck Exception! '{ip}' may not be a valid IP. Stacktrace: \n{e}");
+                        }
                     }
                 }
                 catch (Exception e)

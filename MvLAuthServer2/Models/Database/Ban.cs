@@ -17,6 +17,7 @@ namespace MvLAuthServer2.Models.Database
         public string? Message { get; set; }
         public long? Expiration { get; set; }
         public long Created { get; set; }
+        //public bool Appealed { get; set; }
 
         public string IpRangeString()
         {

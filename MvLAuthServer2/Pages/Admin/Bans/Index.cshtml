@@ -15,6 +15,7 @@
                 <th>Reason</th>
                 <th>Created</th>
                 <th>Expiration</th>
+                @* <th>Appealed?</th> *@
                 <th></th>
             </tr>
         </thead>
@@ -27,8 +28,9 @@
                         <td>@ban.IpRangeString()</td>
                         <td>@ban.Message</td>
                         <td>@DateTimeOffset.FromUnixTimeSeconds(ban.Created).ToLocalTime()</td>
+                        @* <td>@ban.Appealed</td> *@
                         @if (ban.Expiration.HasValue) {
-                            <td>@Utils.FormatTimeSpan(DateTimeOffset.FromUnixTimeSeconds(ban.Expiration.Value).ToLocalTime() - DateTime.Now)</td>
+                            <td>@Utils.FormatTimeSpan(DateTimeOffset.FromUnixTimeSeconds(Math.Clamp(ban.Expiration.Value, -62135596800L, 253402300799L)).ToLocalTime() - DateTime.Now)</td>
                         } else {
                             <td>None.</td>
                         }

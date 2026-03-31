@@ -58,8 +58,15 @@ namespace MvLAuthServer2.Endpoints
             if (response.StatusCode != HttpStatusCode.OK)
             {
                 Guid rand = Guid.NewGuid();
-                log.Error($"Discord Error {rand}\n  Request: {await tokenGenerateMethod.Content.ReadAsStringAsync()}\n  Response: {await response.Content.ReadAsStringAsync()}");
-                return Results.Text($"An error occurred while trying to link your Discord account!\nThis is not your fault. Please report this in #technical-support and ping @ipodtouch0218 with a screenshot of the following code: {rand}");
+                log.Error($"Discord Error {rand}\n  Request: {await tokenGenerateMethod.Content.ReadAsStringAsync()}\n  Response ({response.StatusCode}): {await response.Content.ReadAsStringAsync()}");
+                if ((int) response.StatusCode >= 500 && (int) response.StatusCode <= 599)
+                {
+                    return Results.Text($"An error occurred while trying to link your Discord account! Discord API returned an HTTP 5XX error code ({response.StatusCode}).\nThis is not your fault. Please try again later, Discord's API might be down.\nAlternatively, report this in #technical-support and ping @ipodtouch0218 with a screenshot of the following code: {rand}");
+                }
+                else
+                {
+                    return Results.Text("An error occurred while trying to link your Discord account!\nThis is not your fault. Please report this in #technical-support and ping @ipodtouch0218 with a screenshot of the following code: {rand}");
+                }
             }
 
             try
@@ -118,8 +125,9 @@ namespace MvLAuthServer2.Endpoints
             }
             catch (Exception e)
             {
-                log.Error("Discord API error!\n" + e);
-                return Results.StatusCode(500);
+                Guid rand = Guid.NewGuid();
+                log.Error($"Discord Error {rand}\n  Request: {await tokenGenerateMethod.Content.ReadAsStringAsync()}\n  Response: {await response.Content.ReadAsStringAsync()}\n Stacktrace: {e}");
+                return Results.Text($"An error occurred while trying to link your Discord account!\nThis is not your fault. Please report this in #technical-support and ping @ipodtouch0218 with a screenshot of the following code: {rand}");
             }
         }
     }
