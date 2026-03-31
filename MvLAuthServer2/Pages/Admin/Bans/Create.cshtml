@@ -18,7 +18,7 @@
     <input asp-for="Ban!.IpRangeMax" />
     <br>
     <label asp-for="Ban!.Expiration" class="control-label"></label>
-    <input asp-for="Ban!.Expiration" />
+    <input asp-for="Ban!.Expiration" min="0" max="99999999999" />
     <br />
     <input type="submit" value="Create" />
 </form>
