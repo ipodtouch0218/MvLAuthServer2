@@ -1,7 +1,6 @@
 ﻿using log4net;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -173,7 +172,7 @@ namespace MvLAuthServer2.Endpoints
                 json = await sr.ReadToEndAsync();
             }
 
-            AddPlayerRequest request = JsonConvert.DeserializeObject<AddPlayerRequest>(json);
+            AddPlayerRequest request = JsonConvert.DeserializeObject<AddPlayerRequest>(json)!;
             Dictionary<string, object> requestRuntimePlayer = request.RuntimePlayer;
 
             string ip = (string)request.AuthCookie["ip"];
@@ -190,18 +189,21 @@ namespace MvLAuthServer2.Endpoints
             UserEntry? entry = database.UserEntry.AsNoTracking().FirstOrDefault(ue => ue.UserId == userId);
 
             bool useColoredNickname = true;
-            if (requestRuntimePlayer.TryGetValue("UseColoredNickname", out object coloredNickname))
+            if (requestRuntimePlayer.TryGetValue("UseColoredNickname", out object? coloredNickname))
             {
                 useColoredNickname = coloredNickname as bool? ?? true;
             }
             requestRuntimePlayer["NicknameColor"] = (useColoredNickname ? entry?.NicknameColor : null) ?? "#FFFFFF";
             requestRuntimePlayer["UserId"] = userId.ToString();
             string playerNickname = "noname";
-            if (requestRuntimePlayer.TryGetValue("PlayerNickname", out object playerNicknameObj))
+            if (requestRuntimePlayer.TryGetValue("PlayerNickname", out object? playerNicknameObj))
             {
                 playerNickname = playerNicknameObj as string ?? "noname";
             }
             requestRuntimePlayer["PlayerNickname"] = playerNickname;
+
+            var config = context.RequestServices.GetRequiredService<IConfiguration>();
+            requestRuntimePlayer["IpAddressHash"] = Utils.HmacSHA256ToBase64(config["Secrets:RuntimePlayerIpAddressHmacKey"], ip + '|' + request.GameId)!;
 
             await userEntryLogService.SavePlayerInfoGuid(userId, Utils.IpToNumber(ip), playerNickname);
 
@@ -210,7 +212,7 @@ namespace MvLAuthServer2.Endpoints
                 RuntimePlayer = requestRuntimePlayer,
             };
 
-            RoomVersions.TryGetValue(request.GameId, out string version);
+            RoomVersions.TryGetValue(request.GameId, out string? version);
             Nicknames[userId] = playerNickname;
             log.Info($"GAME: ({version}) [{request.GameId}]: {playerNickname} '{userId}' Added Player ({ip})");
             return Utils.CreateResult(response, 200);

@@ -145,6 +145,17 @@ namespace MvLAuthServer2
             return false;
         }
 
+        public static string? HmacSHA256ToBase64(string? key, string? input)
+        {
+            if (input == null || key == null)
+            {
+                return null;
+            }
+
+            byte[] result = HMACSHA256.HashData(Encoding.UTF8.GetBytes(key), Encoding.UTF8.GetBytes(input));
+            return ToBase64(result);
+        }
+
         public static string? HashSHA256ToBase64(string? input)
         {
             if (input == null)
